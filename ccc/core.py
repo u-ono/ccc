@@ -7,23 +7,24 @@ from ccc.utils import make_header, nounce
 
 class CoinCheckClient(object):
 
-    def __init__(self, access_key=None, secret_key=None):
+    def __init__(self, access_key=None, secret_key=None, timeout=5):
         self.access_key = access_key
         self.secret_key = secret_key
+        self.timeout = timeout
 
     def get_ticker(self, pair='btc_jpy'):
         """get latest information of coincheck market
         """
-        url = 'https://coincheck.com/api/order_books'
-        r = requests.get(url, {'pair': pair})
+        url = 'https://coincheck.com/api/ticker'
+        r = requests.get(url, {'pair': pair}, timeout=self.timeout)
 
         return json.loads(r.text)
 
     def get_trades(self, pair='btc_jpy'):
         """get latest deal history of coincheck market
         """
-        url = 'https://coincheck.com/api/order_books'
-        r = requests.get(url, {'pair': pair})
+        url = 'https://coincheck.com/api/trades'
+        r = requests.get(url, {'pair': pair}, timeout=self.timeout)
 
         return json.loads(r.text)
 
@@ -31,7 +32,7 @@ class CoinCheckClient(object):
         """get latest asks/bids information of coincheck market
         """
         url = 'https://coincheck.com/api/order_books'
-        r = requests.get(url, {'pair': pair})
+        r = requests.get(url, {'pair': pair}, timeout=self.timeout)
 
         return json.loads(r.text)
 
@@ -40,7 +41,7 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/accounts'
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, timeout=self.timeout)
 
         return json.loads(r.text)
 
@@ -49,7 +50,7 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/accounts/balance'
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, timeout=self.timeout)
 
         return json.loads(r.text)
 
@@ -75,7 +76,7 @@ class CoinCheckClient(object):
             'ACCESS-NONCE': nonce,
             'ACCESS-SIGNATURE': signature
         }
-        r = requests.post(url, headers=headers, data=body)
+        r = requests.post(url, headers=headers, data=body, timeout=self.timeout)
         return json.loads(r.text)
 
     def get_open_orders(self):
@@ -83,7 +84,7 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/exchange/orders/opens'
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, timeout=self.timeout)
         return json.loads(r.text)
 
     def cancel(self, order_id):
@@ -92,7 +93,7 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/exchange/orders/' + order_id
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.delete(url, headers=headers)
+        r = requests.delete(url, headers=headers, timeout=self.timeout)
         return json.loads(r.text)
 
     def get_cancel(self, order_id):
@@ -101,7 +102,7 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/exchange/orders/cancel_status'
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.get(url, params={'id': order_id}, headers=headers)
+        r = requests.get(url, params={'id': order_id}, headers=headers, timeout=self.timeout)
         return json.loads(r.text)
 
     def get_transactions(self):
@@ -109,5 +110,5 @@ class CoinCheckClient(object):
         """
         url = 'https://coincheck.com/api/exchange/orders/transactions'
         headers = make_header(url, access_key=self.access_key, secret_key=self.secret_key)
-        r = requests.get(url, headers=headers)
+        r = requests.get(url, headers=headers, timeout=self.timeout)
         return json.loads(r.text)
